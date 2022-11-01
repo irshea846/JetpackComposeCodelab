@@ -162,7 +162,7 @@ fun CardContent(name: String) {
         }
         IconButton(onClick = { expanded = !expanded }) {
             Icon(
-                imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                imageVector = if (expanded) Icons.Filled.ExpandMore else Icons.Filled.ExpandLess,
                 contentDescription = if (expanded) {
                     "show_less"
                 } else {
