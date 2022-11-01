@@ -1,15 +1,16 @@
 package com.rshea.jetpackcomposecodelab
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -32,14 +33,14 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-//@Preview
-@Preview(
-    showBackground = true,
-    heightDp = 320,
-    widthDp = 320,
-    uiMode = UI_MODE_NIGHT_YES,
-    name = "Dark"
-)
+@Preview
+//@Preview(
+//    showBackground = true,
+//    heightDp = 320,
+//    widthDp = 320,
+//    uiMode = UI_MODE_NIGHT_YES,
+//    name = "Dark"
+//)
 @Composable
 fun MyAppPreview() {
     JetpackComposeCodeLabTheme {
@@ -58,7 +59,9 @@ fun MyApp(
         color = MaterialTheme.colorScheme.background
     ) {
         if (shouldShowBoarding) {
-            BoardingScreen(onContinueClicked = { shouldShowBoarding = false } )
+            BoardingScreen(onContinueClicked = {
+                shouldShowBoarding = false
+            })
         } else {
             GreetingsScreen()
         }
@@ -115,35 +118,96 @@ fun GreetingsScreen(
 }
 
 @Composable
-fun Greeting(name: String) {
-    var expanded by rememberSaveable { mutableStateOf(false)}
-    val extraPadding by animateDpAsState(
-        if (expanded) 48.dp else 0.dp,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow
-        )
-    )
-    Surface(
-        color = MaterialTheme.colorScheme.primary,
+private fun Greeting(name: String) {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primary
+        ),
         modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
-        ) {
-        Column {
-            Row(modifier = Modifier.padding(24.dp)) {
-                Column(modifier = Modifier
-                    .weight(1f)
-                    .padding(bottom = extraPadding.coerceAtLeast(0.dp))
-                ) {
-                    Text(text = "Hello,")//, style = MaterialTheme.typography.headlineMedium)
-                    Text(text = name, style = MaterialTheme.typography.headlineMedium.copy(
-                            fontWeight = FontWeight.ExtraBold
-                    ))
+    ) {
+        CardContent(name)
+    }
+}
+
+@Composable
+fun CardContent(name: String) {
+    var expanded by rememberSaveable { mutableStateOf(false)}
+
+    Row(
+        modifier = Modifier
+            .padding(12.dp)
+            .animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            )
+    ){
+        Column (
+            modifier = Modifier
+                .weight(1f)
+                .padding(12.dp)
+        ){
+            Text(text = "Hello, ")
+            Text(text = name, style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.ExtraBold
+                )
+            )
+            if (expanded) {
+                Text(
+                    text = ("Composem ipsum color sit lazy, " +
+                            "padding theme elit, sed do bouncy. ").repeat(4),
+                )
+            }
+        }
+        IconButton(onClick = { expanded = !expanded }) {
+            Icon(
+                imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                contentDescription = if (expanded) {
+                    "show_less"
+                } else {
+                    "show_more"
                 }
-                ElevatedButton(
-                    onClick = { expanded = !expanded }
-                ) {
-                    Text(if (expanded) "Show less" else "Show more")
-                }
+            )
+        }
+    }
+}
+
+//@Composable
+//fun Greeting(name: String) {
+//    var expanded by rememberSaveable { mutableStateOf(false)}
+//    val extraPadding by animateDpAsState(
+//        if (expanded) 48.dp else 0.dp,
+//        animationSpec = spring(
+//            dampingRatio = Spring.DampingRatioMediumBouncy,
+//            stiffness = Spring.StiffnessLow
+//        )
+//    )
+//    Surface(
+//        color = MaterialTheme.colorScheme.primary,
+//        modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+//        ) {
+//        Column {
+//            Row(modifier = Modifier.padding(24.dp)) {
+//                Column(modifier = Modifier
+//                    .weight(1f)
+//                    .padding(bottom = extraPadding.coerceAtLeast(0.dp))
+//                ) {
+//                    Text(text = "Hello,")//, style = MaterialTheme.typography.headlineMedium)
+//                    Text(text = name, style = MaterialTheme.typography.headlineMedium.copy(
+//                            fontWeight = FontWeight.ExtraBold
+//                    ))
+//                }
+//                ElevatedButton(
+//                    onClick = { expanded = !expanded }
+//                ) {
+//                    Text(if (expanded) "Show less" else "Show more")
+//                }
+//            }
+//        }
+//    }
+//}
+
 
 //                Column(
 //                    Modifier.weight(1f),
@@ -162,8 +226,3 @@ fun Greeting(name: String) {
 //                        Text("Show more")
 //                    }
 //                }
-            }
-        }
-    }
-}
-
